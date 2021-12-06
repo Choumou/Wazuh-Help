@@ -60,8 +60,13 @@ def add_rule(path):
         except:
             print("This input is not a valid level... Try again")
             continue
+
+    print("Enter new rule's description : ", end="")
+    description = input()
+    parameters["description"] = description
+    print("New rule's description is " + description + ".\n")
     
-    list_param = ["if_sid", "field", "description", "options", "match"]
+    list_param = ["if_sid", "field", "options", "match"]
     while True:
         print("Enter new parameter you want for this rule (Enter \"done\" if you add all parameters you want) : ")
         param = input()
@@ -116,16 +121,21 @@ def add_rule(path):
         return
 
     print("\nCreation of the rule and writing in file : " + path + "...")
-    to_write = "\n    <rule id=\"" + parameters["id"] + "\" level=\"" + parameters["level"] + "\">\n"
+    to_write = "\n  <rule id=\"" + parameters["id"] + "\" level=\"" + parameters["level"] + "\">\n"
     for p in parameters:
         if (p == "id" or p == "level"):
             continue
         finish_line = p.split(' ')[0]
         to_write += "\t<" + p + ">" + parameters[p] + "</" + finish_line + ">\n"
-    to_write += "    </rule>"
+    to_write += "  </rule>"
 
-    f = open(path, 'a+')
-    f.write(to_write)
+    f = open(path, 'r')
+    file_content = f.read().replace('</group>', '')
+    print(file_content)
+    f.close()
+    f = open(path, 'w+')
+    file_content += "\n" + to_write + "\n</group>"
+    f.write(file_content)
     f.close()
 
     print("Rule writed in file : " + path + ".")
