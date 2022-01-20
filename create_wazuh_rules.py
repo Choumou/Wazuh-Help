@@ -17,17 +17,20 @@ def change_path():
             print("Wrong path !")
 
 def add_rule(path):
-    
+
     parameters = {}
     while True:
         print("Enter new rule's ID : ", end="")
         new_id = input()
         if (new_id == "q" or new_id == "quit"):
             return
-    
+
         try:
             if (int(new_id, 10) < 100000):
                 print("This ID is too small... Try again")
+                continue
+            elif (int(new_id, 10) > 999999):
+                print("This ID is too big... Try again")
                 continue
             f = open(path, "r")
             content = f.read()
@@ -49,7 +52,7 @@ def add_rule(path):
         new_level = input()
         if (new_id == "q" or new_id == "quit"):
             return
-        
+
         try:
             if (int(new_level, 10) > 13 or int(new_level, 10) < 0):
                 print("Level must be in range 0, 13... Try again")
@@ -65,7 +68,7 @@ def add_rule(path):
     description = input()
     parameters["description"] = description
     print("New rule's description is " + description + ".\n")
-    
+
     list_param = ["if_sid", "field", "options", "match"]
     while True:
         print("Enter new parameter you want for this rule (Enter \"done\" if you add all parameters you want) : ")
@@ -105,7 +108,7 @@ def add_rule(path):
             print("Enter the value of this field : ")
             value = input()
             parameters[param] = value
-        
+
         else:
             print("Enter the value of the current parameters : ")
             value = input()
@@ -121,7 +124,7 @@ def add_rule(path):
         return
 
     print("\nCreation of the rule and writing in file : " + path + "...")
-    to_write = "\n  <rule id=\"" + parameters["id"] + "\" level=\"" + parameters["level"] + "\">\n"
+    to_write = "  <rule id=\"" + parameters["id"] + "\" level=\"" + parameters["level"] + "\">\n"
     for p in parameters:
         if (p == "id" or p == "level"):
             continue
@@ -130,8 +133,9 @@ def add_rule(path):
     to_write += "  </rule>"
 
     f = open(path, 'r')
-    file_content = f.read().replace('</group>', '')
-    print(file_content)
+    file_content = f.read()
+    li = file_content.rsplit("</group>", 1)
+    file_content = ''.join(li)
     f.close()
     f = open(path, 'w+')
     file_content += "\n" + to_write + "\n</group>"
@@ -150,7 +154,7 @@ def print_help():
 
 
 def main():
-    
+
     PATH_RULES_FILE = "/var/ossec/etc/rules/local_rules.xml"
 
     print("Default rules file'path is : " + PATH_RULES_FILE)
@@ -160,7 +164,7 @@ def main():
 
         print("> ", end="")
         user_input = input()
-        
+
         if (user_input == "change_path"):
             res = change_path()
             if res != "":
