@@ -71,6 +71,7 @@ def add_rule(path):
 
     list_param = ["if_sid", "field", "options", "match"]
     while True:
+        print("Parameters : id_sid, field, options, match.")
         print("Enter new parameter you want for this rule (Enter \"done\" if you add all parameters you want) : ")
         param = input()
         if (param == "q" or param == "quit"):
